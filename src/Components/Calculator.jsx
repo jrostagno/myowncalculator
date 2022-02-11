@@ -38,28 +38,51 @@ const Calculator = () => {
   function handleOperator(e) {
     setOperator(e.target.value);
     setSecondInput("");
+    if (e.target.value !== operator && operator !== "") {
+      return () => handleResult();
+    }
   }
 
   function handleExpo(e) {
     if (operator !== "x^2" && operator !== "") {
-      setSecondInput(Math.pow(parseInt(secondInput), 2));
-      return () => handleResult();
+      if (Math.pow(parseInt(secondInput), 2).toString().length > 10) {
+        setSecondInput(Math.pow(parseInt(secondInput), 2).toExponential());
+        setShow(true);
+        return () => handleResult();
+      } else {
+        setSecondInput(Math.pow(parseInt(secondInput), 2));
+        return () => handleResult();
+      }
     } else {
       setOperator(e.target.value);
-      setFirstInput(Math.pow(parseInt(firstInput), 2));
-      setShow(true);
+      if (Math.pow(parseInt(firstInput), 2).toString().length > 10) {
+        setFirstInput(Math.pow(parseInt(firstInput), 2).toExponential(5));
+        setShow(true);
+      } else {
+        setFirstInput(Math.pow(parseInt(firstInput), 2));
+        setShow(true);
+      }
     }
   }
 
   function handleSquare(e) {
     if (operator !== "r2" && operator !== "") {
-      setSecondInput(Math.sqrt(parseInt(secondInput)));
-      return () => handleResult();
+      if (Math.sqrt(parseInt(secondInput)).toString().length > 10) {
+        setSecondInput(Math.sqrt(parseInt(secondInput)).toExponential(5));
+        return () => handleResult();
+      } else {
+        setSecondInput(Math.sqrt(parseInt(secondInput)));
+        return () => handleResult();
+      }
     } else {
       setOperator(e.target.value);
-
-      setFirstInput(Math.sqrt(parseInt(firstInput)));
-      setShow(true);
+      if (Math.sqrt(parseInt(firstInput)).toString().length > 10) {
+        setFirstInput(Math.sqrt(parseInt(firstInput)).toExponential(5));
+        setShow(true);
+      } else {
+        setFirstInput(Math.sqrt(parseInt(firstInput)));
+        setShow(true);
+      }
     }
   }
 
@@ -93,24 +116,92 @@ const Calculator = () => {
 
   function handleResult() {
     if (operator === "x" && secondInput) {
-      setFirstInput(parseInt(firstInput) * parseInt(secondInput));
-      setShow(true);
+      if (
+        (parseInt(firstInput) * parseInt(secondInput)).toString().length > 10
+      ) {
+        setFirstInput(
+          parseFloat(
+            parseInt(firstInput) * parseInt(secondInput)
+          ).toExponential(5)
+          // .toLocaleString("en-US")
+        );
+
+        setShow(true);
+      } else {
+        console.log(parseFloat(firstInput * secondInput));
+
+        if (Number.isInteger(firstInput * secondInput)) {
+          console.log(
+            Number.isInteger(parseInt(firstInput) * parseInt(secondInput))
+          );
+          setFirstInput(parseInt(firstInput) * parseInt(secondInput));
+
+          setShow(true);
+        } else {
+          setFirstInput(
+            parseFloat(firstInput * secondInput).toFixed(2)
+
+            // .toLocaleString("en-US")
+          );
+          setShow(true);
+        }
+      }
     }
 
     if (operator === "/" && secondInput) {
-      setFirstInput(parseInt(firstInput) / parseInt(secondInput));
-      setShow(true);
+      console.log(firstInput / secondInput);
+
+      if (
+        parseInt(parseInt(firstInput) / parseInt(secondInput)).toString()
+          .length > 10
+      ) {
+        setFirstInput((firstInput / secondInput).toExponential(5));
+
+        setShow(true);
+      } else if (Number.isInteger(firstInput / secondInput)) {
+        setFirstInput(firstInput / secondInput);
+        setShow(true);
+      } else {
+        setFirstInput((firstInput / secondInput).toFixed(2));
+
+        setShow(true);
+      }
     }
 
     if (operator === "-" && secondInput) {
-      setFirstInput(parseInt(firstInput) - parseInt(secondInput));
-      setShow(true);
+      console.log(firstInput - secondInput);
+      if (
+        parseInt(parseInt(firstInput) - parseInt(secondInput)).toString()
+          .length > 10
+      ) {
+        setFirstInput((firstInput - secondInput).toExponential(5));
+        setShow(true);
+      } else if (Number.isInteger(firstInput - secondInput)) {
+        setFirstInput(firstInput - secondInput);
+
+        setShow(true);
+      } else {
+        setFirstInput((firstInput - secondInput).toFixed(2));
+        setShow(true);
+      }
     }
 
     if (operator === "+" && secondInput) {
-      setFirstInput(parseInt(firstInput) + parseInt(secondInput));
-      setShow(true);
+      if ((firstInput + secondInput).toString().length > 10) {
+        setFirstInput(
+          (parseInt(firstInput) + parseInt(secondInput)).toExponential(5)
+        );
+        setShow(true);
+      } else if (Number.isInteger(firstInput + secondInput)) {
+        setFirstInput(firstInput + secondInput);
+
+        setShow(true);
+      } else {
+        setFirstInput(parseInt(firstInput) + parseInt(secondInput));
+        setShow(true);
+      }
     }
+
     if (operator === "x^2") {
       setFirstInput(Math.pow(parseInt(firstInput), 2));
       setShow(true);
