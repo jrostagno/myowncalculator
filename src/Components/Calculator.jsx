@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import styles from "./Calculatos.module.css";
 import { BsBackspace } from "react-icons/bs";
+import { FaSquareRootAlt } from "react-icons/fa";
+import { CgMathDivide } from "react-icons/cg";
+
+// import raiz from "../assets/square.png";
 
 const Calculator = () => {
   const [secondInput, setSecondInput] = useState("");
@@ -16,21 +20,25 @@ const Calculator = () => {
 
     if (operator !== "") {
       setShow(false);
-      setSecondInput(secondInput.concat(e.target.value));
+
+      setSecondInput(secondInput.concat(e.target.value).slice(0, 12));
     } else {
       if (firstInput[0] === "0" && e.target.value === ".") {
-        setFirstInput(firstInput.concat(e.target.value));
+        setFirstInput(firstInput.concat(e.target.value).slice(0, 12));
       } else if (e.target.value !== 0 && firstInput === "0") {
         setFirstInput(e.target.value);
       } else {
-        setFirstInput(firstInput.concat(e.target.value));
+        setFirstInput(firstInput.concat(e.target.value).slice(0, 12));
       }
     }
   }
 
   function handleClickC() {
     setFirstInput("0");
+
     setSecondInput("");
+
+    setImmediate("");
     setOperator("");
     setShow(true);
   }
@@ -38,6 +46,7 @@ const Calculator = () => {
   function handleOperator(e) {
     setOperator(e.target.value);
     setSecondInput("");
+
     if (e.target.value !== operator && operator !== "") {
       return () => handleResult();
     }
@@ -47,10 +56,12 @@ const Calculator = () => {
     if (operator !== "x^2" && operator !== "") {
       if (Math.pow(parseInt(secondInput), 2).toString().length > 10) {
         setSecondInput(Math.pow(parseInt(secondInput), 2).toExponential());
+
         setShow(true);
         return () => handleResult();
       } else {
         setSecondInput(Math.pow(parseInt(secondInput), 2));
+
         return () => handleResult();
       }
     } else {
@@ -69,9 +80,11 @@ const Calculator = () => {
     if (operator !== "r2" && operator !== "") {
       if (Math.sqrt(parseInt(secondInput)).toString().length > 10) {
         setSecondInput(Math.sqrt(parseInt(secondInput)).toExponential(5));
+
         return () => handleResult();
       } else {
         setSecondInput(Math.sqrt(parseInt(secondInput)));
+
         return () => handleResult();
       }
     } else {
@@ -89,8 +102,13 @@ const Calculator = () => {
   function handleReci(e) {
     setOperator(e.target.value);
 
-    setFirstInput(1 / parseInt(firstInput));
-    setShow(true);
+    if ((1 / parseInt(firstInput)).toString().length > 10) {
+      setFirstInput((1 / parseInt(firstInput)).toExponential(5));
+      setShow(true);
+    } else {
+      setFirstInput(1 / parseInt(firstInput));
+      setShow(true);
+    }
   }
 
   function handleNegate() {
@@ -114,6 +132,40 @@ const Calculator = () => {
     }
   }
 
+  function handleKey(e) {
+    console.log(e);
+    if (
+      e.key === "1" ||
+      e.key === "2" ||
+      e.key === "3" ||
+      e.key === "4" ||
+      e.key === "5" ||
+      e.key === "6" ||
+      e.key === "7" ||
+      e.key === "8" ||
+      e.key === "9" ||
+      e.key === "0" ||
+      e.key === "."
+    ) {
+      handleClick(e);
+    }
+
+    // if (e.key === "+") {
+    //   console.log(e.key);
+    //   operator === "+" ? handleResult() : handleOperator();
+    // }
+    // if (e.key === "-") {
+    //   operator === "-" ? handleResult() : handleOperator();
+    // }
+    // if (e.key === "*") {
+    //   operator === "x" ? handleResult() : handleOperator();
+    // }
+
+    // if (e.key === "/") {
+    //   operator === "/" ? handleResult() : handleOperator();
+    // }
+  }
+
   function handleResult() {
     if (operator === "x" && secondInput) {
       if (
@@ -123,26 +175,16 @@ const Calculator = () => {
           parseFloat(
             parseInt(firstInput) * parseInt(secondInput)
           ).toExponential(5)
-          // .toLocaleString("en-US")
         );
 
         setShow(true);
       } else {
-        console.log(parseFloat(firstInput * secondInput));
-
         if (Number.isInteger(firstInput * secondInput)) {
-          console.log(
-            Number.isInteger(parseInt(firstInput) * parseInt(secondInput))
-          );
           setFirstInput(parseInt(firstInput) * parseInt(secondInput));
 
           setShow(true);
         } else {
-          setFirstInput(
-            parseFloat(firstInput * secondInput).toFixed(2)
-
-            // .toLocaleString("en-US")
-          );
+          setFirstInput(parseFloat(firstInput * secondInput).toFixed(2));
           setShow(true);
         }
       }
@@ -213,13 +255,22 @@ const Calculator = () => {
     }
 
     if (operator === "1/x") {
-      setFirstInput(1 / parseInt(firstInput));
-      setShow(true);
+      if (setFirstInput(1 / parseInt(firstInput)).toString().length > 10) {
+        setFirstInput((1 / parseInt(firstInput)).toExponential(5));
+        setShow(true);
+      } else {
+        setFirstInput(1 / parseInt(firstInput));
+        setShow(true);
+      }
     }
   }
 
   return (
-    <div className={styles.contCalculator}>
+    <div
+      className={styles.contCalculator}
+      onKeyPress={handleKey}
+      // onKeyDown={handler}
+    >
       <h1 className={styles.display}>{show ? firstInput : secondInput}</h1>
       <div className={styles.contButtons}>
         <div className={styles.buttons}>
@@ -231,7 +282,9 @@ const Calculator = () => {
           </button>
         </div>{" "}
         <div className={styles.buttons}>
-          <button className={styles.btn}>CE</button>
+          <button className={styles.btn} onClick={handleClickC}>
+            CE
+          </button>
         </div>{" "}
         <div className={styles.buttons}>
           <button className={styles.btn} onClick={handleBack}>
@@ -250,7 +303,8 @@ const Calculator = () => {
         </div>{" "}
         <div className={styles.buttons}>
           <button className={styles.btn} onClick={handleSquare} value="r2">
-            r2
+            {/* <img src={raiz} alt="raiz" width="35" heigth="35" /> */}
+            <FaSquareRootAlt />
           </button>
         </div>{" "}
         <div className={styles.buttons}>
@@ -259,7 +313,7 @@ const Calculator = () => {
             onClick={operator === "/" ? handleResult : handleOperator}
             value="/"
           >
-            /
+            <CgMathDivide />
           </button>
         </div>{" "}
         <div className={styles.buttons}>

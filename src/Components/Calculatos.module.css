@@ -4,6 +4,7 @@
   margin: auto;
   margin-top: 50px;
   border: 0.5px solid;
+  background: #474d5e;
 }
 
 .contButtons {
@@ -11,22 +12,38 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(6, 1fr);
+  grid-gap: 2px;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 3px;
+  background-color: #30343f;
 }
 
 .display {
-  border: 1px solid;
-  display: block;
   height: 110px;
+  background-color: #474d5e;
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }
 
 .btn {
   width: 100%;
   height: 100%;
   font-weight: 600;
-  font-size: large;
+  font-size: 20px;
+  background-color: #30343f;
+  color: aliceblue;
+}
+.btn:hover {
+  background-color: #474d5e;
 }
 
 h1 {
-  text-align: end;
-  font-size: 50px;
+  font-size: 60px;
+  color: aliceblue;
+  margin-left: 3px;
+  margin-right: 3px;
+  font-family: monospace;
+  font-weight: normal;
 }
