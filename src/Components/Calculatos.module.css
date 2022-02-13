@@ -12,11 +12,12 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(6, 1fr);
-  grid-gap: 2px;
-  margin-left: 3px;
-  margin-right: 3px;
-  margin-bottom: 3px;
-  background-color: #30343f;
+  grid-gap: 6px;
+  margin-left: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+
+  background: #474d5e;
 }
 
 .display {
@@ -33,6 +34,7 @@
   font-weight: 600;
   font-size: 20px;
   background-color: #30343f;
+
   color: aliceblue;
 }
 .btn:hover {
@@ -42,8 +44,20 @@
 h1 {
   font-size: 60px;
   color: aliceblue;
-  margin-left: 3px;
-  margin-right: 3px;
+  margin-left: 6px;
+  margin-right: 6px;
   font-family: monospace;
   font-weight: normal;
+  margin-bottom: 0;
+}
+
+span {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  order: -1;
+  margin-bottom: 20px;
+  margin-right: 10px;
+
+  font-size: 40px;
 }

@@ -19,9 +19,12 @@ const Calculator = () => {
     }
 
     if (operator !== "") {
-      setShow(false);
-
-      setSecondInput(secondInput.concat(e.target.value).slice(0, 12));
+      if (show) {
+        setShow(false);
+        setSecondInput(e.target.value);
+      } else {
+        setSecondInput(secondInput.concat(e.target.value).slice(0, 12));
+      }
     } else {
       if (firstInput[0] === "0" && e.target.value === ".") {
         setFirstInput(firstInput.concat(e.target.value).slice(0, 12));
@@ -38,22 +41,22 @@ const Calculator = () => {
 
     setSecondInput("");
 
-    setImmediate("");
     setOperator("");
     setShow(true);
   }
 
   function handleOperator(e) {
-    setOperator(e.target.value);
-    setSecondInput("");
-
     if (e.target.value !== operator && operator !== "") {
-      return () => handleResult();
+      handleResult();
+      setOperator(e.target.value);
+      setSecondInput("");
+    } else {
+      setOperator(e.target.value);
     }
   }
 
   function handleExpo(e) {
-    if (operator !== "x^2" && operator !== "") {
+    if (operator !== "^2" && operator !== "") {
       if (Math.pow(parseInt(secondInput), 2).toString().length > 10) {
         setSecondInput(Math.pow(parseInt(secondInput), 2).toExponential());
 
@@ -112,8 +115,10 @@ const Calculator = () => {
   }
 
   function handleNegate() {
-    setFirstInput(parseInt(firstInput) * -1);
-    setShow(true);
+    if (firstInput !== "0") {
+      setFirstInput(firstInput * -1);
+      setShow(true);
+    }
   }
 
   function handleBack() {
@@ -132,39 +137,40 @@ const Calculator = () => {
     }
   }
 
-  function handleKey(e) {
-    console.log(e);
-    if (
-      e.key === "1" ||
-      e.key === "2" ||
-      e.key === "3" ||
-      e.key === "4" ||
-      e.key === "5" ||
-      e.key === "6" ||
-      e.key === "7" ||
-      e.key === "8" ||
-      e.key === "9" ||
-      e.key === "0" ||
-      e.key === "."
-    ) {
-      handleClick(e);
-    }
+  // function handleKey(e) {
+  //   console.log(e);
+  //   if (
+  //     e.key === "1" ||
+  //     e.key === "2" ||
+  //     e.key === "3" ||
+  //     e.key === "4" ||
+  //     e.key === "5" ||
+  //     e.key === "6" ||
+  //     e.key === "7" ||
+  //     e.key === "8" ||
+  //     e.key === "9" ||
+  //     e.key === "0" ||
+  //     e.key === "."
+  //   ) {
+  //     handleClick(e);
+  //   }
 
-    // if (e.key === "+") {
-    //   console.log(e.key);
-    //   operator === "+" ? handleResult() : handleOperator();
-    // }
-    // if (e.key === "-") {
-    //   operator === "-" ? handleResult() : handleOperator();
-    // }
-    // if (e.key === "*") {
-    //   operator === "x" ? handleResult() : handleOperator();
-    // }
+  //   // if (e.key === "+") {
+  //   //   operator === "+" ? handleResult() : handleOperator(e);
+  //   // }
+  //   // if (e.key === "-") {
+  //   //   operator === "-" ? handleResult() : handleOperator(e);
+  //   // }
+  //   // if (e.key === "*") {
+  //   //   operator === "x" ? handleResult() : handleOperator(e);
+  //   // }
 
-    // if (e.key === "/") {
-    //   operator === "/" ? handleResult() : handleOperator();
-    // }
-  }
+  //   // if (e.key === "/") {
+  //   //   operator === "/" ? handleResult() : handleOperator(e);
+  //   // }
+
+  //   // if (e.key === "Enter") handleResult();
+  // }
 
   function handleResult() {
     if (operator === "x" && secondInput) {
@@ -191,8 +197,6 @@ const Calculator = () => {
     }
 
     if (operator === "/" && secondInput) {
-      console.log(firstInput / secondInput);
-
       if (
         parseInt(parseInt(firstInput) / parseInt(secondInput)).toString()
           .length > 10
@@ -211,7 +215,6 @@ const Calculator = () => {
     }
 
     if (operator === "-" && secondInput) {
-      console.log(firstInput - secondInput);
       if (
         parseInt(parseInt(firstInput) - parseInt(secondInput)).toString()
           .length > 10
@@ -244,9 +247,14 @@ const Calculator = () => {
       }
     }
 
-    if (operator === "x^2") {
-      setFirstInput(Math.pow(parseInt(firstInput), 2));
-      setShow(true);
+    if (operator === "^2") {
+      if (Math.pow(parseInt(firstInput), 2).toString().length > 10) {
+        setFirstInput(Math.pow(parseInt(firstInput), 2).toExponential(5));
+        setShow(true);
+      } else {
+        setFirstInput(Math.pow(parseInt(firstInput), 2));
+        setShow(true);
+      }
     }
 
     if (operator === "r2") {
@@ -268,10 +276,14 @@ const Calculator = () => {
   return (
     <div
       className={styles.contCalculator}
-      onKeyPress={handleKey}
+      // onKeyPress={handleKey}
       // onKeyDown={handler}
     >
-      <h1 className={styles.display}>{show ? firstInput : secondInput}</h1>
+      <div className={styles.contDisplay}>
+        <h1 className={styles.display}>{show ? firstInput : secondInput}</h1>
+        <span>{`${firstInput}${operator}${secondInput}`}</span>
+      </div>
+
       <div className={styles.contButtons}>
         <div className={styles.buttons}>
           <button className={styles.btn}>%</button>
@@ -297,7 +309,7 @@ const Calculator = () => {
           </button>
         </div>{" "}
         <div className={styles.buttons}>
-          <button className={styles.btn} onClick={handleExpo} value="x^2">
+          <button className={styles.btn} onClick={handleExpo} value="^2">
             x^2
           </button>
         </div>{" "}
